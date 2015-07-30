@@ -11,7 +11,7 @@ WIDTH, HEIGHT = 200, 200
 class GameWindow < Gosu::Window
   def initialize
     super WIDTH, HEIGHT
-    self.caption = "Grid Creation Test"
+    self.caption = "Ruby Maze Runner"
 
 
     @grid = Grid.new(HEIGHT/10, WIDTH/10)
