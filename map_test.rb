@@ -37,41 +37,44 @@ class GameWindow < Gosu::Window
     @background_image = Gosu::Image.new(canvas, :tileable => true)
     @player = Player.new
     @player.warp(new_start.column*10, new_start.row*10)
-    @goal = Gosu::Font.new(10)
+    @goal = Gosu::Image.new("goal2.png")
+    @victory = Gosu::Image.new("winner.png")
+    @victory_sound = Gosu::Sample.new("win.mp3")
+
   end
 
   def update
-    row = @player.location[0]/10
-    column = @player.location[1]/10
-    cell = @grid[row,column]
-    delay_time = 0.1
-
-    if @player.grid_location == @goal_cell.location
-      puts "Goal Reached!"
-    end
-
-    if Gosu::button_down? Gosu::KbLeft or Gosu::button_down? Gosu::GpLeft then
-      @player.walk(:left) if cell.has_west_neighbor?
-      sleep delay_time
-    end
-    if Gosu::button_down? Gosu::KbRight or Gosu::button_down? Gosu::GpRight then
-      @player.walk(:right) if cell.has_east_neighbor?
-      sleep delay_time
-    end
-    if Gosu::button_down? Gosu::KbUp or Gosu::button_down? Gosu::GpButton0 then
-      @player.walk(:forward) if cell.has_north_neighbor?
-      sleep delay_time
-    end
-    if Gosu::button_down? Gosu::KbDown or Gosu::button_down? Gosu::GpButton1 then
-      @player.walk(:back) if cell.has_south_neighbor?
-      sleep delay_time
-    end
   end
 
   def draw
     @player.draw
     @background_image.draw(0, 0, 0)
-    @goal.draw("G",@goal_cell.column*10,@goal_cell.row*10, 1, 1.0, 1.0, 0xff_ff0000)
+    @goal.draw(@goal_cell.column*10,@goal_cell.row*10,1)
+
+    if @player.grid_location == @goal_cell.location
+      vheight=(HEIGHT-@victory.height)/2
+      vwidth =(WIDTH-@victory.width)/2
+      @victory.draw(vheight,vwidth,1)
+    end
+
+  end
+
+  def button_down(id)
+    row = @player.location[0]/10
+    column = @player.location[1]/10
+    cell = @grid[row,column]
+
+    case id
+      when Gosu::KbLeft   then @player.walk(:left) if cell.has_west_neighbor?
+      when Gosu::KbRight  then @player.walk(:right) if cell.has_east_neighbor?
+      when Gosu::KbUp     then @player.walk(:forward) if cell.has_north_neighbor?
+      when Gosu::KbDown   then @player.walk(:back) if cell.has_south_neighbor?
+      when Gosu::KbEscape then Gosu::Window.close
+    end
+
+    if @player.grid_location == @goal_cell.location
+      @victory_sound.play
+    end
   end
 
 end
