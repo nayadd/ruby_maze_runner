@@ -65,7 +65,7 @@ class Grid
     ' ' * max_chars
   end
 
-  def background_color_for(_cell)
+  def background_color_for(cell)
     nil
   end
 
@@ -141,15 +141,12 @@ class Grid
     img
   end
 
-  def to_rmagick(cell_size: 10)
+  def to_rmagick(cell_size: 10, path:false)
     img_width = cell_size * columns
     img_height = cell_size * rows
 
     canvas = Magick::ImageList.new
     canvas.new_image(WIDTH, HEIGHT)
-
-    background = ChunkyPNG::Color::WHITE
-    wall = ChunkyPNG::Color::BLACK
 
     img = Magick::ImageList.new
     img.new_image(img_width , img_height )
@@ -158,16 +155,23 @@ class Grid
     [:backgrounds, :walls].each do |mode|
       each_cell do |cell|
         gc = Magick::Draw.new
-        gc.stroke('black')
+
         x1 = cell.column * cell_size
         y1 = cell.row * cell_size
         x2 = (cell.column + 1) * cell_size
         y2 = (cell.row + 1) * cell_size
 
         if mode == :backgrounds
-          color = background_color_for(cell)
-          gc.rectangle(x1, y1, x2, y2, color, color) if color
+          #color ='green'
+          color = path ? background_color_for(cell) : 'white'
+          gc.stroke_opacity(0.1)
+          gc.stroke(color)
+          gc.fill_opacity(0.1)
+          gc.fill(color)
+          gc.rectangle(x1+2, y1+2, x2-2, y2-2) if color
         else
+          gc.stroke('black')
+          gc.fill('white')
           gc.line(x1, y1, x2, y1) unless cell.north
           gc.line(x1, y1, x1, y2) unless cell.west
           gc.line(x2, y1, x2, y2) unless cell.linked?(cell.east)
