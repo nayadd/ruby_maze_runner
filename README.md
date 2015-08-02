@@ -23,6 +23,7 @@ Reach it and you'll be greeted with image and sounds (just a fancy way to say a 
 
 ![victory_screenshot](https://raw.githubusercontent.com/nayadd/ruby_maze_runner/master/victory_screenshot.png)
 
+Now with plotted solution on maze! (press the `s` key)
 
 Needless to say it's a work in progress
 
@@ -31,5 +32,4 @@ TODO:
 + Even Better Graphics
 + Better Victory Message
 + Time / Movements Counter
-+ Auto-Solve / Path Coloring
 + Other Maze Generators / Formats
